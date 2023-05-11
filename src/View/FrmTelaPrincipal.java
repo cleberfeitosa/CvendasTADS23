@@ -54,6 +54,7 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java GUI Swing - TADS 2023 ! ! !");
+        setPreferredSize(new java.awt.Dimension(800, 600));
 
         jDsktopPane.setPreferredSize(new java.awt.Dimension(700, 600));
         jDsktopPane.setLayout(new java.awt.CardLayout());
@@ -78,6 +79,11 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
 
         jMnItmCliente.setMnemonic('l');
         jMnItmCliente.setText("Cliente");
+        jMnItmCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmClienteActionPerformed(evt);
+            }
+        });
         jMnCadastro.add(jMnItmCliente);
 
         jMnItmFornecedor.setMnemonic('f');
@@ -152,6 +158,12 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
         tela.setVisible(true);
         jDsktopPane.add(tela);
     }//GEN-LAST:event_jMnItmSobreActionPerformed
+
+    private void jMnItmClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmClienteActionPerformed
+        FrmCliente tela = new FrmCliente();
+        tela.setVisible(true);
+        jDsktopPane.add(tela);
+    }//GEN-LAST:event_jMnItmClienteActionPerformed
 
     /**
      * @param args the command line arguments

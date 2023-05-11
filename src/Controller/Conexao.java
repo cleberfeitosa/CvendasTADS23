@@ -22,7 +22,7 @@ public class Conexao {
         //armazenando informações referente ao banco de dados
         String url = "jdbc:mysql://localhost:3306/cvendas";//?useTimeZone=true&serverTimezone=UTC
         String user = "root";
-        String senha = "root";
+        String senha = "IFROOcrxi18#";
         //estabelecer a conexão com o banco
 
         try {
@@ -39,7 +39,7 @@ public class Conexao {
         try {
             if((conexao!= null) && (!conexao.isClosed())){
                 conexao.close();
-                JOptionPane.showMessageDialog(null, "Descontado do Banco de Dados!!!");
+               //JOptionPane.showMessageDialog(null, "Descontado do Banco de Dados!!!");
             }
         } catch (Exception e) {
             JOptionPane.showMessageDialog(null, "Não conseguiu descontar do Banco de Dados!!!");

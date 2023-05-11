@@ -7,7 +7,9 @@ package View;
 import Controller.ClienteDAO;
 import Model.Cliente;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import util.Constantes;
 
 /**
  *
@@ -15,9 +17,7 @@ import javax.swing.table.DefaultTableModel;
  */
 public class FrmCliente extends javax.swing.JInternalFrame {
 
-    /**
-     * Creates new form FrmCliente
-     */
+    private int modo;
     public FrmCliente() {
         initComponents();
     }
@@ -30,12 +30,77 @@ public class FrmCliente extends javax.swing.JInternalFrame {
 
         for (Cliente cliente : lista) {
             dados.addRow(new Object[]{
-            cliente.getId(),
-            cliente.getNome(),
-        });
-     }
-        
+                cliente.getId(),
+                cliente.getNome(),
+            });
+        }
+
     }
+    
+    private void habilitarCampos(){
+        jTxtNome.setEnabled(true);
+        jTxtEndereco.setEnabled(true);
+        jTxtBairro.setEnabled(true);
+        jTxtCidade.setEnabled(true);
+        jTxtCEp.setEnabled(true);
+        jTxtTelefone.setEnabled(true);
+        jcbxUF.setEnabled(true);
+        jTxtEmail.setEnabled(true);
+    }
+    
+    private void desabilitarCampos(){
+        jTxtNome.setEnabled(false);
+        jTxtEndereco.setEnabled(false);
+        jTxtBairro.setEnabled(false);
+        jTxtCidade.setEnabled(false);
+        jTxtCEp.setEnabled(false);
+        jTxtTelefone.setEnabled(false);
+        jcbxUF.setEnabled(false);
+        jTxtEmail.setEnabled(false);
+    }
+    
+    private void desabilitarBotoes(){
+        jBtnSalvar.setEnabled(false);
+        jBtnCancelar.setEnabled(false);
+        jBtnNovo.setEnabled(true);
+        jBtnAlterar.setEnabled(true);
+        jBtnExcluir.setEnabled(true);
+    }
+    private void habilitarBotoes(){
+        jBtnSalvar.setEnabled(true);
+        jBtnCancelar.setEnabled(true);
+        jBtnNovo.setEnabled(false);
+        jBtnAlterar.setEnabled(false);
+        jBtnExcluir.setEnabled(false);
+    }
+    
+    public void incluiCliente(){
+        if(jTxtNome.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(this, "Informe o nome do Cliente","Erro",JOptionPane.ERROR_MESSAGE);
+            jTxtNome.requestFocus();
+        }else{
+            Cliente cliente = new Cliente();
+            cliente.setNome(jTxtNome.getText().trim());
+            cliente.setEndereco(jTxtEndereco.getText().trim());
+            cliente.setBairro(jTxtBairro.getText().trim());
+            cliente.setCidade(jTxtCidade.getText().trim());
+            cliente.setUf(jcbxUF.getSelectedItem().toString());
+            cliente.setCep((String)jTxtCEp.getValue());
+            cliente.setTelefone((String)jTxtTelefone.getValue());
+            cliente.setEmail(jTxtEmail.getText());
+            
+            ClienteDAO clienteDAO = new ClienteDAO();
+            if(clienteDAO.icluirCliente(cliente)){
+                JOptionPane.showMessageDialog(this, "Cliente Cadastrado com Sucesso!!!","Confirmação", JOptionPane.INFORMATION_MESSAGE);
+                listar();
+                desabilitarBotoes();
+                desabilitarCampos();
+            }else{
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar o Cliente!!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -64,17 +129,37 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         jTxtCEp = new javax.swing.JFormattedTextField();
         jLabel8 = new javax.swing.JLabel();
         jTxtTelefone = new javax.swing.JFormattedTextField();
+        jLabel9 = new javax.swing.JLabel();
+        jTxtEmail = new javax.swing.JTextField();
         jPanel4 = new javax.swing.JPanel();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
-        jButton5 = new javax.swing.JButton();
+        jBtnNovo = new javax.swing.JButton();
+        jBtnAlterar = new javax.swing.JButton();
+        jBtnExcluir = new javax.swing.JButton();
+        jBtnSalvar = new javax.swing.JButton();
+        jBtnCancelar = new javax.swing.JButton();
 
         setClosable(true);
         setIconifiable(true);
         setMaximizable(true);
         setTitle("Java GUI Swing - TADS 2023 ! ! !");
+        addInternalFrameListener(new javax.swing.event.InternalFrameListener() {
+            public void internalFrameActivated(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameActivated(evt);
+            }
+            public void internalFrameClosed(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameClosing(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeactivated(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameDeiconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameIconified(javax.swing.event.InternalFrameEvent evt) {
+            }
+            public void internalFrameOpened(javax.swing.event.InternalFrameEvent evt) {
+                formInternalFrameOpened(evt);
+            }
+        });
         getContentPane().setLayout(new java.awt.GridBagLayout());
 
         jPanel1.setBackground(java.awt.SystemColor.activeCaption);
@@ -107,6 +192,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
 
         jBtnPesquisar.setMnemonic('p');
         jBtnPesquisar.setText("Pesquisar");
+        jBtnPesquisar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnPesquisarActionPerformed(evt);
+            }
+        });
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
@@ -114,16 +204,26 @@ public class FrmCliente extends javax.swing.JInternalFrame {
 
         jTblClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+                {null, null}
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "ID", "Nome"
             }
-        ));
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false
+            };
+
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        jTblClientes.getTableHeader().setReorderingAllowed(false);
         jScrollPane1.setViewportView(jTblClientes);
+        if (jTblClientes.getColumnModel().getColumnCount() > 0) {
+            jTblClientes.getColumnModel().getColumn(0).setMinWidth(1);
+            jTblClientes.getColumnModel().getColumn(0).setMaxWidth(200);
+        }
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -150,6 +250,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel3, gridBagConstraints);
+
+        jTxtNome.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridwidth = 5;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
@@ -164,6 +266,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel4, gridBagConstraints);
+
+        jTxtEndereco.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 1;
@@ -179,6 +283,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(Bairro, gridBagConstraints);
+
+        jTxtBairro.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 2;
@@ -195,6 +301,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel6, gridBagConstraints);
+
+        jTxtCidade.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 2;
@@ -211,7 +319,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel5, gridBagConstraints);
 
-        jcbxUF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
+        jcbxUF.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "MT", "MS", "SP", "PR" }));
+        jcbxUF.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 1;
         gridBagConstraints.gridy = 3;
@@ -226,6 +335,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel7, gridBagConstraints);
+
+        jTxtCEp.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
         gridBagConstraints.gridy = 3;
@@ -240,12 +351,32 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel8, gridBagConstraints);
+
+        jTxtTelefone.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
         gridBagConstraints.gridy = 3;
         gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jTxtTelefone, gridBagConstraints);
+
+        jLabel9.setText("Email");
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 0;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.ipadx = 1;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jLabel9, gridBagConstraints);
+
+        jTxtEmail.setEnabled(false);
+        gridBagConstraints = new java.awt.GridBagConstraints();
+        gridBagConstraints.gridx = 1;
+        gridBagConstraints.gridy = 4;
+        gridBagConstraints.gridwidth = 5;
+        gridBagConstraints.fill = java.awt.GridBagConstraints.BOTH;
+        gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
+        jPanel3.add(jTxtEmail, gridBagConstraints);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -255,20 +386,32 @@ public class FrmCliente extends javax.swing.JInternalFrame {
 
         jPanel4.setLayout(new java.awt.FlowLayout(java.awt.FlowLayout.RIGHT));
 
-        jButton1.setText("Novo");
-        jPanel4.add(jButton1);
+        jBtnNovo.setText("Novo");
+        jBtnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnNovoActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jBtnNovo);
 
-        jButton2.setText("Alterar");
-        jPanel4.add(jButton2);
+        jBtnAlterar.setText("Alterar");
+        jPanel4.add(jBtnAlterar);
 
-        jButton3.setText("Excluir");
-        jPanel4.add(jButton3);
+        jBtnExcluir.setText("Excluir");
+        jPanel4.add(jBtnExcluir);
 
-        jButton4.setText("Salvar");
-        jPanel4.add(jButton4);
+        jBtnSalvar.setText("Salvar");
+        jBtnSalvar.setEnabled(false);
+        jBtnSalvar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnSalvarActionPerformed(evt);
+            }
+        });
+        jPanel4.add(jBtnSalvar);
 
-        jButton5.setText("Cancelar");
-        jPanel4.add(jButton5);
+        jBtnCancelar.setText("Cancelar");
+        jBtnCancelar.setEnabled(false);
+        jPanel4.add(jBtnCancelar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 0;
@@ -279,15 +422,51 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
+        
+    }//GEN-LAST:event_formInternalFrameActivated
+
+    private void jBtnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnPesquisarActionPerformed
+        String nome = "%"+jTxtFiltroNome.getText()+"%";
+        ClienteDAO clienteDao = new ClienteDAO();
+        List<Cliente> lista = clienteDao.consultaClienteNome(nome);
+        DefaultTableModel dados = (DefaultTableModel) jTblClientes.getModel();
+        dados.setRowCount(0);
+        for (Cliente cliente : lista) {
+            dados.addRow(new Object[]{
+                cliente.getId(),
+                cliente.getNome(),
+            });
+        }
+    }//GEN-LAST:event_jBtnPesquisarActionPerformed
+
+    private void jBtnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnNovoActionPerformed
+        habilitarCampos();
+        habilitarBotoes();
+        modo = Constantes.INSERT_MODE;
+    }//GEN-LAST:event_jBtnNovoActionPerformed
+
+    private void jBtnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSalvarActionPerformed
+        if(modo == Constantes.INSERT_MODE){
+            incluiCliente();
+        }/*else if(modo == Constantes.EDIT_MODE){
+            alteraCliente();
+        }*/
+    }//GEN-LAST:event_jBtnSalvarActionPerformed
+
+    private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
+        listar();
+    }//GEN-LAST:event_formInternalFrameOpened
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel Bairro;
+    private javax.swing.JButton jBtnAlterar;
+    private javax.swing.JButton jBtnCancelar;
+    private javax.swing.JButton jBtnExcluir;
+    private javax.swing.JButton jBtnNovo;
     private javax.swing.JButton jBtnPesquisar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
-    private javax.swing.JButton jButton5;
+    private javax.swing.JButton jBtnSalvar;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
@@ -296,6 +475,7 @@ public class FrmCliente extends javax.swing.JInternalFrame {
     private javax.swing.JLabel jLabel6;
     private javax.swing.JLabel jLabel7;
     private javax.swing.JLabel jLabel8;
+    private javax.swing.JLabel jLabel9;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JPanel jPanel2;
     private javax.swing.JPanel jPanel3;
@@ -305,6 +485,7 @@ public class FrmCliente extends javax.swing.JInternalFrame {
     private javax.swing.JTextField jTxtBairro;
     private javax.swing.JFormattedTextField jTxtCEp;
     private javax.swing.JTextField jTxtCidade;
+    private javax.swing.JTextField jTxtEmail;
     private javax.swing.JTextField jTxtEndereco;
     private javax.swing.JTextField jTxtFiltroNome;
     private javax.swing.JTextField jTxtNome;

@@ -19,6 +19,7 @@ public class ClienteDAO {
     private PreparedStatement pst;
     private ResultSet rs;
     private String consultarCliente = "select * from cliente";
+    private String consultarClienteNome = "select * from cliente where cliente.nome like ?";
     private String incluirCliente = "insert into cliente (nome, endereco, bairro, cidade, uf, cep, telefone, email)values (?,?,?,?,?,?,?,?)";
     private String alterarCliente = "update cliente set nome = ?, endereco = ?, bairro = ?, cidade = ?, uf = ?, cep = ?, telefone = ?, email = ? where cliente.id = ?";
     
@@ -51,6 +52,37 @@ public class ClienteDAO {
             Conexao.desconectar(Conexao.conectar());
          } catch (Exception e) {
              e.printStackTrace();
+        }
+        return listaClientes;
+    }
+    
+    public List<Cliente> consultaClienteNome(String nome){
+        List<Cliente> listaClientes = new ArrayList<Cliente>();
+        Cliente cliente;
+        try {
+            Conexao.conectar();
+            pst = Conexao.conectar().prepareStatement(consultarClienteNome);
+            //nome = "%"+nome +"%";
+            pst.setString(1, nome);
+            rs = pst.executeQuery();
+            
+            while(rs.next()){
+                cliente = new Cliente();
+                cliente.setId(rs.getInt("id"));
+                cliente.setNome(rs.getString("nome"));
+                cliente.setEndereco(rs.getString("endereco"));
+                cliente.setBairro(rs.getString("bairro"));
+                cliente.setCidade(rs.getString("cidade"));
+                cliente.setCep(rs.getString("cep"));
+                cliente.setTelefone(rs.getString("telefone"));
+                cliente.setEmail(rs.getString("email"));
+                
+                listaClientes.add(cliente);
+            }
+            Conexao.desconectar(Conexao.conectar());
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return listaClientes;
     }
