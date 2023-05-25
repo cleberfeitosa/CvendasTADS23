@@ -128,11 +128,11 @@ public class ClienteDAO {
             pst.executeUpdate();
             
             Conexao.desconectar(Conexao.conectar());
+            return true;
           } catch (Exception e) {
               e.printStackTrace();
         }
-        
-        return false;
+         return false;
     }
     
     public boolean excluirCliente(Cliente cliente){
@@ -143,6 +143,7 @@ public class ClienteDAO {
             pst.setInt(1,cliente.getId());
             
             pst.executeUpdate();
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }

@@ -6,9 +6,14 @@ package View;
 
 import Controller.ClienteDAO;
 import Model.Cliente;
+import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.text.DefaultFormatterFactory;
+import javax.swing.text.MaskFormatter;
 import util.Constantes;
 
 /**
@@ -18,26 +23,29 @@ import util.Constantes;
 public class FrmCliente extends javax.swing.JInternalFrame {
 
     private int modo;
+    List<Cliente> lista;
     public FrmCliente() {
         initComponents();
     }
 
     public void listar() {
         ClienteDAO clienteDao = new ClienteDAO();
-        List<Cliente> lista = clienteDao.consultarCliente();
+        lista = clienteDao.consultarCliente();
         DefaultTableModel dados = (DefaultTableModel) jTblClientes.getModel();
         dados.setNumRows(0);
 
         for (Cliente cliente : lista) {
             dados.addRow(new Object[]{
                 cliente.getId(),
-                cliente.getNome(),
-            });
+                cliente.getNome(),});
+
         }
+        
+        
 
     }
-    
-    private void habilitarCampos(){
+
+    private void habilitarCampos() {
         jTxtNome.setEnabled(true);
         jTxtEndereco.setEnabled(true);
         jTxtBairro.setEnabled(true);
@@ -47,8 +55,8 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         jcbxUF.setEnabled(true);
         jTxtEmail.setEnabled(true);
     }
-    
-    private void desabilitarCampos(){
+
+    private void desabilitarCampos() {
         jTxtNome.setEnabled(false);
         jTxtEndereco.setEnabled(false);
         jTxtBairro.setEnabled(false);
@@ -58,46 +66,90 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         jcbxUF.setEnabled(false);
         jTxtEmail.setEnabled(false);
     }
-    
-    private void desabilitarBotoes(){
+
+    private void desabilitarBotoes() {
         jBtnSalvar.setEnabled(false);
         jBtnCancelar.setEnabled(false);
         jBtnNovo.setEnabled(true);
         jBtnAlterar.setEnabled(true);
         jBtnExcluir.setEnabled(true);
     }
-    private void habilitarBotoes(){
+
+    private void habilitarBotoes() {
         jBtnSalvar.setEnabled(true);
         jBtnCancelar.setEnabled(true);
         jBtnNovo.setEnabled(false);
         jBtnAlterar.setEnabled(false);
         jBtnExcluir.setEnabled(false);
     }
-    
-    public void incluiCliente(){
-        if(jTxtNome.getText().trim().equals("")){
-            JOptionPane.showMessageDialog(this, "Informe o nome do Cliente","Erro",JOptionPane.ERROR_MESSAGE);
+
+    public void incluiCliente() {
+        if (jTxtNome.getText().trim().equals("")) {
+            JOptionPane.showMessageDialog(this, "Informe o nome do Cliente", "Erro", JOptionPane.ERROR_MESSAGE);
             jTxtNome.requestFocus();
-        }else{
+        } else {
             Cliente cliente = new Cliente();
             cliente.setNome(jTxtNome.getText().trim());
             cliente.setEndereco(jTxtEndereco.getText().trim());
             cliente.setBairro(jTxtBairro.getText().trim());
             cliente.setCidade(jTxtCidade.getText().trim());
             cliente.setUf(jcbxUF.getSelectedItem().toString());
-            cliente.setCep((String)jTxtCEp.getValue());
-            cliente.setTelefone((String)jTxtTelefone.getValue());
+            String cep = jTxtCEp.getText().replace(".","");
+            cep = cep.replace("-","");
+            cliente.setCep(cep);
+            cliente.setTelefone((String) jTxtTelefone.getValue());
+            cliente.setEmail(jTxtEmail.getText());
+
+            ClienteDAO clienteDAO = new ClienteDAO();
+            if (clienteDAO.icluirCliente(cliente)) {
+                JOptionPane.showMessageDialog(this, "Cliente Cadastrado com Sucesso!!!", "Confirmação", JOptionPane.INFORMATION_MESSAGE);
+                listar();
+                desabilitarBotoes();
+                desabilitarCampos();
+            } else {
+                JOptionPane.showMessageDialog(this, "Erro ao cadastrar o Cliente!!", "Erro", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
+    public void alteraCliente(){
+        if(jTxtNome.getText().trim().equals("")){
+            JOptionPane.showMessageDialog(this, "Informe o nome do Cliente", "Erro",JOptionPane.ERROR_MESSAGE);
+            jTxtNome.requestFocus();
+        }else{
+            Cliente cliente = new Cliente();
+            cliente.setId(lista.get(jTblClientes.getSelectedRow()).getId());
+            cliente.setNome(jTxtNome.getText().trim());
+            cliente.setEndereco(jTxtEndereco.getText().trim());
+            cliente.setBairro(jTxtBairro.getText().trim());
+            cliente.setCidade(jTxtCidade.getText().trim());
+            cliente.setUf(jcbxUF.getSelectedItem().toString());
+            String cep = jTxtCEp.getText().replace(".","");
+            cep = cep.replace("-","");
+            cliente.setCep(cep);
+            cliente.setTelefone((String) jTxtTelefone.getValue());
             cliente.setEmail(jTxtEmail.getText());
             
-            ClienteDAO clienteDAO = new ClienteDAO();
-            if(clienteDAO.icluirCliente(cliente)){
-                JOptionPane.showMessageDialog(this, "Cliente Cadastrado com Sucesso!!!","Confirmação", JOptionPane.INFORMATION_MESSAGE);
+            ClienteDAO clienteDao = new ClienteDAO();
+            if(clienteDao.alterarCliente(cliente)){
+                JOptionPane.showMessageDialog(this, "Cliente alterado com Sucesso!!!", "Confirmação", JOptionPane.INFORMATION_MESSAGE);
                 listar();
                 desabilitarBotoes();
                 desabilitarCampos();
             }else{
-                JOptionPane.showMessageDialog(this, "Erro ao cadastrar o Cliente!!", "Erro", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Informe o nome do Cliente", "Erro",JOptionPane.ERROR_MESSAGE);
+            
             }
+        }
+    }
+    
+    private void excluiCliente() {
+        ClienteDAO clienteDAO = new ClienteDAO();
+        if (clienteDAO.excluirCliente(lista.get(jTblClientes.getSelectedRow()))) {
+            JOptionPane.showMessageDialog(this, "Dados do cliente excluídos com sucesso!", "Confirmação", JOptionPane.INFORMATION_MESSAGE);
+            listar();
+        } else {
+            JOptionPane.showMessageDialog(this, "Erro ao excluir os dados!", "Erro", JOptionPane.ERROR_MESSAGE);
         }
     }
 
@@ -219,6 +271,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
             }
         });
         jTblClientes.getTableHeader().setReorderingAllowed(false);
+        jTblClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTblClientesMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(jTblClientes);
         if (jTblClientes.getColumnModel().getColumnCount() > 0) {
             jTblClientes.getColumnModel().getColumn(0).setMinWidth(1);
@@ -336,6 +393,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel7, gridBagConstraints);
 
+        try {
+            jTxtCEp.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("##.###-###")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         jTxtCEp.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 3;
@@ -352,6 +414,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         gridBagConstraints.insets = new java.awt.Insets(5, 5, 5, 5);
         jPanel3.add(jLabel8, gridBagConstraints);
 
+        try {
+            jTxtTelefone.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("(##)# ####-####")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
         jTxtTelefone.setEnabled(false);
         gridBagConstraints = new java.awt.GridBagConstraints();
         gridBagConstraints.gridx = 5;
@@ -395,9 +462,19 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         jPanel4.add(jBtnNovo);
 
         jBtnAlterar.setText("Alterar");
+        jBtnAlterar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnAlterarActionPerformed(evt);
+            }
+        });
         jPanel4.add(jBtnAlterar);
 
         jBtnExcluir.setText("Excluir");
+        jBtnExcluir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnExcluirActionPerformed(evt);
+            }
+        });
         jPanel4.add(jBtnExcluir);
 
         jBtnSalvar.setText("Salvar");
@@ -411,6 +488,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
 
         jBtnCancelar.setText("Cancelar");
         jBtnCancelar.setEnabled(false);
+        jBtnCancelar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBtnCancelarActionPerformed(evt);
+            }
+        });
         jPanel4.add(jBtnCancelar);
 
         gridBagConstraints = new java.awt.GridBagConstraints();
@@ -423,11 +505,11 @@ public class FrmCliente extends javax.swing.JInternalFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void formInternalFrameActivated(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameActivated
-        
+
     }//GEN-LAST:event_formInternalFrameActivated
 
     private void jBtnPesquisarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnPesquisarActionPerformed
-        String nome = "%"+jTxtFiltroNome.getText()+"%";
+        String nome = "%" + jTxtFiltroNome.getText() + "%";
         ClienteDAO clienteDao = new ClienteDAO();
         List<Cliente> lista = clienteDao.consultaClienteNome(nome);
         DefaultTableModel dados = (DefaultTableModel) jTblClientes.getModel();
@@ -435,8 +517,7 @@ public class FrmCliente extends javax.swing.JInternalFrame {
         for (Cliente cliente : lista) {
             dados.addRow(new Object[]{
                 cliente.getId(),
-                cliente.getNome(),
-            });
+                cliente.getNome(),});
         }
     }//GEN-LAST:event_jBtnPesquisarActionPerformed
 
@@ -447,16 +528,58 @@ public class FrmCliente extends javax.swing.JInternalFrame {
     }//GEN-LAST:event_jBtnNovoActionPerformed
 
     private void jBtnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnSalvarActionPerformed
-        if(modo == Constantes.INSERT_MODE){
+        if (modo == Constantes.INSERT_MODE) {
             incluiCliente();
-        }/*else if(modo == Constantes.EDIT_MODE){
+        }else if(modo == Constantes.EDIT_MODE){
             alteraCliente();
-        }*/
+        }
     }//GEN-LAST:event_jBtnSalvarActionPerformed
 
     private void formInternalFrameOpened(javax.swing.event.InternalFrameEvent evt) {//GEN-FIRST:event_formInternalFrameOpened
         listar();
     }//GEN-LAST:event_formInternalFrameOpened
+
+    private void jTblClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTblClientesMouseClicked
+        if(jTblClientes.getSelectedRow()!= -1){
+           int indice =jTblClientes.getSelectedRow();
+           jTxtNome.setText(lista.get(indice).getNome());
+           jTxtEndereco.setText(lista.get(indice).getEndereco());
+           jTxtBairro.setText(lista.get(indice).getBairro());
+           jTxtCidade.setText(lista.get(indice).getCidade());
+           jcbxUF.setSelectedItem(lista.get(indice).getUf());
+           jTxtCEp.setText(lista.get(indice).getCep());
+           jTxtTelefone.setText(lista.get(indice).getTelefone());
+           jTxtEmail.setText(lista.get(indice).getEmail());
+        }
+
+    }//GEN-LAST:event_jTblClientesMouseClicked
+
+    private void jBtnAlterarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnAlterarActionPerformed
+        if(jTblClientes.getSelectedRow()!= -1){
+            habilitarBotoes();
+            habilitarCampos();
+            modo = Constantes.EDIT_MODE;
+        }else{
+            JOptionPane.showMessageDialog(this,"Selecione um cliente da Lista" , "Erro", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_jBtnAlterarActionPerformed
+
+    private void jBtnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnExcluirActionPerformed
+       if(jTblClientes.getSelectedRow() != -1){
+           int resposta = JOptionPane.showConfirmDialog(this, "Confirma exclusão de cliente?", "Confirmação", JOptionPane.YES_NO_OPTION);
+           if(resposta == JOptionPane.YES_OPTION){
+               excluiCliente();
+           }
+           }else{
+               JOptionPane.showMessageDialog(this, "Selecione um cliente na Lista");
+       
+       }
+    }//GEN-LAST:event_jBtnExcluirActionPerformed
+
+    private void jBtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCancelarActionPerformed
+        desabilitarBotoes();
+        desabilitarCampos();
+    }//GEN-LAST:event_jBtnCancelarActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
