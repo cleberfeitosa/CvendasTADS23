@@ -22,7 +22,7 @@ public class Conexao {
         //armazenando informações referente ao banco de dados
         String url = "jdbc:mysql://localhost:3306/cvendas";//?useTimeZone=true&serverTimezone=UTC
         String user = "root";
-        String senha = "IFROOcrxi18#";
+        String senha = "";
         //estabelecer a conexão com o banco
 
         try {

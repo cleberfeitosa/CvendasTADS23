@@ -17,6 +17,8 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
      */
     public FrmTelaPrincipal() {
         initComponents();
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
+        setResizable(false);
         
     }
 
@@ -54,10 +56,9 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Java GUI Swing - TADS 2023 ! ! !");
-        setPreferredSize(new java.awt.Dimension(800, 600));
 
-        jDsktopPane.setPreferredSize(new java.awt.Dimension(700, 600));
-        jDsktopPane.setLayout(new java.awt.CardLayout());
+        jDsktopPane.setPreferredSize(new java.awt.Dimension(799, 599));
+        jDsktopPane.setRequestFocusEnabled(false);
 
         jMnSistema.setMnemonic('s');
         jMnSistema.setText("Sistema");
@@ -88,6 +89,11 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
 
         jMnItmFornecedor.setMnemonic('f');
         jMnItmFornecedor.setText("Fornecedor");
+        jMnItmFornecedor.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmFornecedorActionPerformed(evt);
+            }
+        });
         jMnCadastro.add(jMnItmFornecedor);
 
         jMnItmProduto.setMnemonic('p');
@@ -106,10 +112,20 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
 
         jMnItmRegistrar.setMnemonic('r');
         jMnItmRegistrar.setText("Registrar Vendas");
+        jMnItmRegistrar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmRegistrarActionPerformed(evt);
+            }
+        });
         jMnVendas.add(jMnItmRegistrar);
 
         jMnItmConsultarVendas.setMnemonic('c');
         jMnItmConsultarVendas.setText("Consultar Vendas");
+        jMnItmConsultarVendas.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMnItmConsultarVendasActionPerformed(evt);
+            }
+        });
         jMnVendas.add(jMnItmConsultarVendas);
 
         jMenuBar1.add(jMnVendas);
@@ -133,14 +149,16 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDsktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addComponent(jDsktopPane, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 12, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jDsktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 280, Short.MAX_VALUE)
+            .addComponent(jDsktopPane, javax.swing.GroupLayout.DEFAULT_SIZE, 580, Short.MAX_VALUE)
         );
 
-        pack();
+        setSize(new java.awt.Dimension(816, 639));
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
@@ -149,7 +167,9 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
     }//GEN-LAST:event_jMnItmSairActionPerformed
 
     private void jMnItmProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmProdutoActionPerformed
-        // TODO add your handling code here:
+       FrmProduto tela = new FrmProduto();
+       tela.setVisible(true);
+       jDsktopPane.add(tela);
     }//GEN-LAST:event_jMnItmProdutoActionPerformed
 
     private void jMnItmSobreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmSobreActionPerformed
@@ -164,6 +184,24 @@ public class FrmTelaPrincipal extends javax.swing.JFrame {
         tela.setVisible(true);
         jDsktopPane.add(tela);
     }//GEN-LAST:event_jMnItmClienteActionPerformed
+
+    private void jMnItmFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmFornecedorActionPerformed
+        FrmFornecedor tela = new FrmFornecedor();
+        tela.setVisible(true);
+        jDsktopPane.add(tela);
+    }//GEN-LAST:event_jMnItmFornecedorActionPerformed
+
+    private void jMnItmRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmRegistrarActionPerformed
+        FrmRegistraVenda tela = new FrmRegistraVenda();
+        tela.setVisible(true);
+        jDsktopPane.add(tela);
+    }//GEN-LAST:event_jMnItmRegistrarActionPerformed
+
+    private void jMnItmConsultarVendasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMnItmConsultarVendasActionPerformed
+        FrmConsultaVenda tela = new FrmConsultaVenda();
+        tela.setVisible(true);
+        jDsktopPane.add(tela);
+    }//GEN-LAST:event_jMnItmConsultarVendasActionPerformed
 
     /**
      * @param args the command line arguments

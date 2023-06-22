@@ -343,6 +343,14 @@
         <Property name="alignment" type="int" value="2"/>
       </Layout>
       <SubComponents>
+        <Component class="javax.swing.JButton" name="jBtnSelecionaCliente">
+          <Properties>
+            <Property name="text" type="java.lang.String" value="Selecionar Cliente"/>
+          </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="jBtnSelecionaClienteActionPerformed"/>
+          </Events>
+        </Component>
         <Component class="javax.swing.JButton" name="jBtnNovo">
           <Properties>
             <Property name="text" type="java.lang.String" value="Novo"/>
